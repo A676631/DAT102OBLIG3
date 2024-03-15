@@ -1,76 +1,118 @@
 package dat102.uke89.oppg1_mengder;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import dat102.uke89.oppg1_mengder.TabellMengde;
+import dat102.uke89.oppg1_mengder.MengdeADT;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class TabellMengdeTest {
-
-    private TabellMengde<Integer> mengde;
+    private MengdeADT<Integer> set;
 
     @BeforeEach
-    public void oppsett() {
-        mengde = new TabellMengde<>();
+    public void setUp() {
+        set = new TabellMengde<>();
+        set.leggTil(1);
+        set.leggTil(2);
+        set.leggTil(3);
     }
 
     @Test
-    public void leggTilOgInneholderTest() {
-        mengde.leggTil(1);
-        mengde.leggTil(2);
-        mengde.leggTil(3);
-
-        assertTrue(mengde.inneholder(1));
-        assertTrue(mengde.inneholder(2));
-        assertTrue(mengde.inneholder(3));
-        assertFalse(mengde.inneholder(4));
+    public void testErTom() {
+        assertFalse(set.erTom());
     }
 
     @Test
-    public void leggTilAlleFraTest() {
-        TabellMengde<Integer> annenMengde = new TabellMengde<>();
-        annenMengde.leggTil(4);
-        annenMengde.leggTil(5);
-
-        mengde.leggTil(1);
-        mengde.leggTil(2);
-        mengde.leggTilAlleFra(annenMengde);
-
-        assertTrue(mengde.inneholder(1));
-        assertTrue(mengde.inneholder(2));
-        assertTrue(mengde.inneholder(4));
-        assertTrue(mengde.inneholder(5));
+    public void testInneholder() {
+        assertTrue(set.inneholder(2));
+        assertFalse(set.inneholder(4));
     }
 
     @Test
-    public void fjernTest() {
-        mengde.leggTil(1);
-        mengde.leggTil(2);
-        mengde.leggTil(3);
-
-        assertEquals(2, mengde.fjern(2));
-        assertFalse(mengde.inneholder(2));
-        assertEquals(3, mengde.fjern(3));
-        assertFalse(mengde.inneholder(3));
-        assertNull(mengde.fjern(4));
+    public void testErDelmengdeAv() {
+        TabellMengde<Integer> subset = new TabellMengde<>();
+        subset.leggTil(2);
+        assertTrue(subset.erDelmengdeAv(set));
     }
 
     @Test
-    public void snittTest() {
-        TabellMengde<Integer> annenMengde = new TabellMengde<>();
-        annenMengde.leggTil(2);
-        annenMengde.leggTil(3);
-
-        mengde.leggTil(1);
-        mengde.leggTil(2);
-        mengde.leggTil(4);
-
-        MengdeADT<Integer> snitt = mengde.snitt(annenMengde);
-
-        assertTrue(snitt.inneholder(2));
-        assertFalse(snitt.inneholder(1));
-        assertFalse(snitt.inneholder(3));
-        assertFalse(snitt.inneholder(4));
+    public void testErLik() {
+        TabellMengde<Integer> equalSet = new TabellMengde<>();
+        equalSet.leggTil(1);
+        equalSet.leggTil(2);
+        equalSet.leggTil(3);
+        assertTrue(set.erLik(equalSet));
     }
-    
-    
+
+    @Test
+    public void testErDisjunkt() {
+        TabellMengde<Integer> disjointSet = new TabellMengde<>();
+        disjointSet.leggTil(4);
+        disjointSet.leggTil(5);
+        assertTrue(set.erDisjunkt(disjointSet));
+    }
+
+    @Test
+    public void testSnitt() {
+        TabellMengde<Integer> otherSet = new TabellMengde<>();
+        otherSet.leggTil(2);
+        otherSet.leggTil(3);
+        MengdeADT<Integer> intersection = set.snitt(otherSet);
+        assertTrue(intersection.inneholder(2));
+        assertTrue(intersection.inneholder(3));
+        assertFalse(intersection.inneholder(1));
+    }
+
+    @Test
+    public void testUnion() {
+        TabellMengde<Integer> otherSet = new TabellMengde<>();
+        otherSet.leggTil(3);
+        otherSet.leggTil(4);
+        MengdeADT<Integer> union = set.union(otherSet);
+        assertTrue(union.inneholder(1));
+        assertTrue(union.inneholder(2));
+        assertTrue(union.inneholder(3));
+        assertTrue(union.inneholder(4));
+    }
+
+    @Test
+    public void testMinus() {
+        TabellMengde<Integer> otherSet = new TabellMengde<>();
+        otherSet.leggTil(2);
+        otherSet.leggTil(4);
+        MengdeADT<Integer> difference = set.minus(otherSet);
+        assertTrue(difference.inneholder(1));
+        assertTrue(difference.inneholder(3));
+        assertFalse(difference.inneholder(2));
+        assertFalse(difference.inneholder(4));
+    }
+
+    @Test
+    public void testLeggTil() {
+        set.leggTil(4);
+        assertTrue(set.inneholder(4));
+    }
+
+    @Test
+    public void testLeggTilAlleFra() {
+        TabellMengde<Integer> otherSet = new TabellMengde<>();
+        otherSet.leggTil(4);
+        otherSet.leggTil(5);
+        set.leggTilAlleFra(otherSet);
+        assertTrue(set.inneholder(4));
+        assertTrue(set.inneholder(5));
+    }
+
+    @Test
+    public void testFjern() {
+        Integer removed = set.fjern(2);
+        assertTrue(removed == 2);
+        assertFalse(set.inneholder(2));
+    }
+
+    @Test
+    public void testAntallElementer() {
+        assertEquals(3, set.antallElementer());
+    }
 }
