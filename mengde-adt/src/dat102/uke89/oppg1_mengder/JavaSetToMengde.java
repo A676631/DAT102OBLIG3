@@ -76,37 +76,56 @@ public JavaSetToMengde() {
 
 	@Override
 	public MengdeADT<T> minus(MengdeADT<T> annenMengde) {
-		JavaSetToMengde
+		JavaSetToMengde<T>differensMengde=new JavaSetToMengde<>();
+		for(T element:sett) {
+			if(!annenMengde.inneholder(element)) {
+				differensMengde.leggTil(element);
+			}
+		}
+		return differensMengde;
 	}
 
 	@Override
 	public void leggTil(T element) {
-		// TODO Auto-generated method stub
+		sett.add(element);
+		
 		
 	}
 
 	@Override
 	public void leggTilAlleFra(MengdeADT<T> annenMengde) {
-		// TODO Auto-generated method stub
-		
+		for(T element: annenMengde.tilTabell()) {
+			leggTil(element);
+			
+		}
 	}
 
 	@Override
 	public T fjern(T element) {
-		// TODO Auto-generated method stub
+	if(sett.remove(element)) {
+		return element;
+		
+	} else {
 		return null;
+	}
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public T[] tilTabell() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		T[]array=(T[])new Object[sett.size()];
+		int index=0;
+	for(T element: sett) {
+		array[index++]=element;
+	}
+	return array;
 	}
 
 	@Override
 	public int antallElementer() {
-		// TODO Auto-generated method stub
-		return 0;
+		return sett.size();
+		
 	}
 	
 
